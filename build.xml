@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<!-- Build file for Serialization vs. Externalization test project -->
+<project name="Serialization vs. Externalization test build file" default="run" basedir=".">
+    
+    <!-- Source directory -->
+    <property name="src.dir" value="src"/>
+
+    <!-- build directory -->
+    <property name="build.dir" value="build"/>
+
+    <!-- run directory -->
+    <property name="run.dir" value="."/>
+
+    <!-- Classes directory -->
+    <property name="classes.dir" value="${build.dir}/classes"/>
+
+    <!-- Objects counter. Use -Dobjcount=<value> when running ant to set another value -->
+    
+    <property name="objcount" value="100000"/>
+
+    <!-- Target - prepares directories -->
+    <target name="prepare">
+        <echo message="Preparing directories..."/>
+        <mkdir dir="${classes.dir}"/>
+    </target>
+
+    <!-- Target - cleans project -->
+    <target name="clean" description="Removes all generated files">
+        <echo message="Cleaning all..."/>
+        <delete dir="${build.dir}"/>
+        <delete>
+            <fileset dir="${run.dir}" includes="*.ser"/>
+        </delete>
+        <echo message="Cleanup finished."/>
+    </target>
+
+    <!-- Target - compiles test -->
+    <target name="compile" depends="prepare" description="Compiles all test sources">
+        <echo message="Compiling test..."/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}">
+        </javac>
+    </target>
+    
+  
+    <!-- Target - Runs test -->
+    <target name="run" depends="compile" description="Runs test">
+        <echo message="Running test..."/>
+        <java classname="com.performance.Test" fork="yes">
+            <classpath>
+                <pathelement path="${classes.dir}"/>
+            </classpath>
+            <jvmarg value="-Xmx256m"/>
+            <arg value="${objcount}"/>
+        </java>
+    </target>
+    
+</project>
